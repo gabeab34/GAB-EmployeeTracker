@@ -1,8 +1,10 @@
 import mysql from 'mysql2';
 import inquirer from 'inquirer';
-import consoletable from 'console.table'
+// import table from 'console.table'
+// const cTable = require('console.table');
 import sequelize from 'sequelize';
 import 'dotenv/config'
+// import { SELECT } from 'sequelize/types/query-types';
 
 const dbconnect = new sequelize(process.env.MYSQLURI)
 
@@ -45,11 +47,37 @@ const Qs = async () => {
     message: 'Please enter a last name for the new employee',
     when: ({ initialQ }) => initialQ === 'Add an employee'
     },
+    ])
+    .then(async (userInput) => {
+        if (userInput.initialQ === "View all departments") {
+        viewDepartment()
+        }
+        if (userInput.initialQ === "View all roles") {
+        viewRoles()
+        }
+        if (userInput.initialQ === "View all employees") {
+        viewEmployees()
+        }
+    })
 
 
+}
 
+const viewDepartment = async () =>
+    await dbconnect.query(`SELECT * FROM department ORDER BY id ASC;`, function (err, res) {
+        if (err) throw err;
+        console.table(res);
+    });
 
+// function viewDepartment() {
+//     dbconnect.query("SELECT * FROM department", function (err, results) {
+//       console.table(results);
+//     });
+//   }
 
-])};
+// const viewDepartment = async () => {
+//     let data = await dbconnect.promise().query('SELECT * from department');
+//     console.table(data[0])
+// }
 
 Qs()
