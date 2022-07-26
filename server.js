@@ -1,6 +1,7 @@
 import mysql from 'mysql2';
 import inquirer from 'inquirer';
-
+import consoletable from 'console.table'
+import sequelize from 'sequelize';
 
 const connect = mysql.createConnection({
     host: 'localhost',
