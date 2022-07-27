@@ -1,5 +1,6 @@
 import dbconnect from './config/connection.js';
 import inquirer from 'inquirer';
+
 // import table from 'console.table'
 // const cTable = require('console.table');
 
@@ -13,12 +14,7 @@ const Qs = async () => {
     choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role' ]
     },
 
-    {
-    name: 'roleAdd',
-    type: 'input',
-    message: 'Please enter a name for the new role',
-    when: ({ initialQ }) => initialQ === 'Add a role'
-    },
+
     {
     name: 'employeeAddFirst',
     type: 'input',
@@ -91,21 +87,38 @@ const addDepartment = () => {
     ]).then((deptName) => {
         dbconnect.query(`INSERT INTO department SET ?`, { name: deptName.departmentAdd })
         Qs()
-    }
-    
-    
-    
-    
-    
-    )
-
-
-
-
-
-
-
-}
+    })
+};
+const addRole = () => {
+    dbconnect.query(`SELECT * from department;`, (err,res) => {
+        if (err) throw err;
+        let departments = res.map(department => ({name: department.name, value: department.id}));
+        inquirer.prompt([
+        {
+        name: 'roleTitle',
+        type: 'input',
+        message: 'Please enter a title for the new role'
+        },
+        {
+        name: 'roleSalary',
+        type: 'input',
+        message: 'Please enter a salary for the new role'
+        },
+        {
+        name: 'roleDept',
+        type: 'rawlist',
+        message: 'Please enter a department id for the new role',
+        choices: departments
+        },
+    ]).then((roleInput) => {
+        dbconnect.query(`INSERT INTO role SET ?`, { title: roleInput.roleTitle, salary: roleInput.roleSalary, department_id: roleInput.roledept },
+        (err, res) => {
+        if (err) throw err;
+        Qs()
+        })
+    })
+ })
+};
 
 
 
