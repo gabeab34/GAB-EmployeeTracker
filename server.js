@@ -4,8 +4,8 @@ import inquirer from 'inquirer';
 // const cTable = require('console.table');
 
 
- const Qs = () => {
-    inquirer.prompt([
+const Qs = async () => {
+   await inquirer.prompt([
     {
     name: 'initialQ',
     type: 'list',
@@ -47,6 +47,9 @@ import inquirer from 'inquirer';
         if (userInput.initialQ === "View all employees") {
         viewEmployees()
         }
+        // if (userInput.initialQ === "Update an employee role") {
+
+        // }
     })
 
 
@@ -57,19 +60,22 @@ const viewDepartments = () => {
     dbconnect.query("SELECT * FROM department", function (err, res) {
     console.table(res);
     });
+    Qs()
   }
 
 const viewRoles = () => {
-    dbconnect.query("SELECT * FROM roles", function (err, res) {
+    dbconnect.query("SELECT * FROM role", function (err, res) {
     console.table(res);
     });
+    Qs()
   }
 
 const viewEmployees = () => {
-    dbconnect.query("SELECT * FROM employees", function (err, res) {
+    dbconnect.query("SELECT * FROM employee", function (err, res) {
     console.table(res);
-      });
-    }  
+    });
+    Qs()
+  }  
 
 
 
