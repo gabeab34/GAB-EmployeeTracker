@@ -1,18 +1,7 @@
-import mysql from 'mysql2';
+import dbconnect from './config/connection.js';
 import inquirer from 'inquirer';
 // import table from 'console.table'
 // const cTable = require('console.table');
-import sequelize from 'sequelize';
-import 'dotenv/config'
-// import { SELECT } from 'sequelize/types/query-types';
-
-const dbconnect = new sequelize(process.env.MYSQLURI)
-
-dbconnect.authenticate().then(() => {
-    console.log('Connection to database established successfully.');
-  }).catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
 
 
 const Qs = async () => {
@@ -80,4 +69,4 @@ const viewDepartment = async () =>
 //     console.table(data[0])
 // }
 
-Qs()
+Qs();
