@@ -4,8 +4,8 @@ import inquirer from 'inquirer';
 // const cTable = require('console.table');
 
 
-const Qs = async () => {
-    const userInput = await inquirer.prompt([
+ const Qs = () => {
+    inquirer.prompt([
     {
     name: 'initialQ',
     type: 'list',
@@ -37,9 +37,9 @@ const Qs = async () => {
     when: ({ initialQ }) => initialQ === 'Add an employee'
     },
     ])
-    .then(async (userInput) => {
+    .then((userInput) => {
         if (userInput.initialQ === "View all departments") {
-        viewDepartment()
+        viewDepartments()
         }
         if (userInput.initialQ === "View all roles") {
         viewRoles()
@@ -52,21 +52,45 @@ const Qs = async () => {
 
 }
 
-const viewDepartment = async () =>
-    await dbconnect.query(`SELECT * FROM department ORDER BY id ASC;`, function (err, res) {
-        if (err) throw err;
-        console.table(res);
+
+const viewDepartments = () => {
+    dbconnect.query("SELECT * FROM department", function (err, res) {
+    console.table(res);
     });
+  }
 
-// function viewDepartment() {
-//     dbconnect.query("SELECT * FROM department", function (err, results) {
-//       console.table(results);
-//     });
-//   }
+const viewRoles = () => {
+    dbconnect.query("SELECT * FROM roles", function (err, res) {
+    console.table(res);
+    });
+  }
 
+const viewEmployees = () => {
+    dbconnect.query("SELECT * FROM employees", function (err, res) {
+    console.table(res);
+      });
+    }  
+
+
+
+
+
+
+
+  
 // const viewDepartment = async () => {
 //     let data = await dbconnect.promise().query('SELECT * from department');
 //     console.table(data[0])
 // }
+
+// const viewDepartments = async () =>
+//     await dbconnect.query(`SELECT * FROM department ORDER BY id ASC;`, function (err, res) {
+//         if (err) throw err;
+//         console.table(res);
+//     });
+
+
+
+
 
 Qs();
