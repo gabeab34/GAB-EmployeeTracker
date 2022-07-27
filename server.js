@@ -12,12 +12,7 @@ const Qs = async () => {
     message: 'Welcome to the employee database. Please select the action you would like to perform.',
     choices: ['View all departments', 'View all roles', 'View all employees', 'Add a department', 'Add a role', 'Add an employee', 'Update an employee role' ]
     },
-    {
-    name: 'departmentAdd',
-    type: 'input',
-    message: 'Please enter a name for the new department',
-    when: ({ initialQ }) => initialQ === 'Add a department'
-    },
+
     {
     name: 'roleAdd',
     type: 'input',
@@ -47,9 +42,18 @@ const Qs = async () => {
         if (userInput.initialQ === "View all employees") {
         viewEmployees()
         }
-        // if (userInput.initialQ === "Update an employee role") {
-
-        // }
+        if (userInput.initialQ === "Add a department") {
+        addDepartment()
+        }
+        if (userInput.initialQ === "Add a role") {
+        addRole()
+        }
+        if (userInput.initialQ === "Add an employee") {
+        addEmployee()
+        }
+        if (userInput.initialQ === "Update an employee role") {
+        updateEmployee()
+        }
     })
 
 
@@ -75,7 +79,33 @@ const viewEmployees = () => {
     console.table(res);
     });
     Qs()
-  }  
+  } 
+
+const addDepartment = () => {
+    inquirer.prompt([
+    {
+        name: 'departmentAdd',
+        type: 'input',
+        message: 'Please enter a name for the new department'
+    },
+    ]).then((deptName) => {
+        dbconnect.query(`INSERT INTO department SET ?`, { name: deptName.departmentAdd })
+        Qs()
+    }
+    
+    
+    
+    
+    
+    )
+
+
+
+
+
+
+
+}
 
 
 
