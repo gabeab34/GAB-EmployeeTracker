@@ -1,6 +1,6 @@
 import dbconnect from './config/connection.js';
 import inquirer from 'inquirer';
-
+const cTable = import('console.table');
 
 const Qs = async () => {
    await inquirer.prompt([
@@ -13,7 +13,7 @@ const Qs = async () => {
     ])
     .then((userInput) => {
         if (userInput.initialQ === "View all departments") {
-        viewDepartments()
+        viewDepartments().then(Qs)
         }
         if (userInput.initialQ === "View all roles") {
         viewRoles()
@@ -25,7 +25,7 @@ const Qs = async () => {
         addDepartment()
         }
         if (userInput.initialQ === "Add a role") {
-        addRole()
+        addRole().then(Qs)
         }
         if (userInput.initialQ === "Add an employee") {
         addEmployee()
@@ -39,11 +39,9 @@ const Qs = async () => {
 }
 
 
-const viewDepartments = () => {
-    dbconnect.query("SELECT * FROM department", function (err, res) {
-    console.table(res);
-    });
-    Qs()
+const viewDepartments = async () => {
+    let data = await dbconnect.promise().query("SELECT * FROM department");
+    console.table(data[0]);
   }
 
 const viewRoles = () => {
@@ -72,36 +70,33 @@ const addDepartment = () => {
         Qs()
     })
 };
-const addRole = () => {
-    dbconnect.query(`SELECT * FROM department;`, (err,res) => {
-        if (err) throw err;
-        let departments = res.map(department => ({name: department.name, value: department.id}));
+const addRole = async () => {
+ let departments = await dbconnect.promise().query(`SELECT name,id AS value FROM department`);
+        console.log( 'departments: ', departments[0])
         inquirer.prompt([
         {
-        name: 'roleTitle',
+        name: 'title',
         type: 'input',
         message: 'Please enter a title for the new role'
         },
         {
-        name: 'roleSalary',
+        name: 'salary',
         type: 'input',
         message: 'Please enter a salary for the new role'
         },
         {
-        name: 'roleDept',
+        name: 'department_id',
         type: 'rawlist',
         message: 'Please enter a department id for the new role',
-        choices: departments
+        choices: departments[0]
         },
     ]).then((roleInput) => {
-        dbconnect.query(`INSERT INTO role SET ?`, { title: roleInput.roleTitle, salary: roleInput.roleSalary, department_id: roleInput.roledept },
+        dbconnect.query(`INSERT INTO role SET ?`, roleInput,
         (err, res) => {
         if (err) throw err;
-        Qs()
         })
     })
- })
-};
+ };
 
 const addEmployee = () => {
     dbconnect.query(`SELECT * From role;`, (err,res) => {
