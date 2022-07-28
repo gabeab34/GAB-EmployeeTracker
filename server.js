@@ -90,7 +90,7 @@ const addDepartment = () => {
     })
 };
 const addRole = () => {
-    dbconnect.query(`SELECT * from department;`, (err,res) => {
+    dbconnect.query(`SELECT * FROM department;`, (err,res) => {
         if (err) throw err;
         let departments = res.map(department => ({name: department.name, value: department.id}));
         inquirer.prompt([
@@ -120,6 +120,78 @@ const addRole = () => {
  })
 };
 
+const addEmployee = () => {
+    dbconnect.query(`SELECT * From role;`, (err,res) => {
+        if (err) throw err;
+        let roles = res.map(role => ({name: role.title, value: role.role_id}));
+        dbconnect.query(`SELECT * FROM employee`, (err, res) => {
+            if (err) throw err;
+            let employees = res.map(employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.id}))
+        inquirer.prompt([
+        {
+        name: 'firstName',
+        type: 'input',
+        message: 'Please enter the first name of the new employee'
+        },
+        {
+        name: 'lastName',
+        type: 'input',
+        message: 'Please enter the last name of the new employee'
+        },
+        {
+        name: 'role',
+        type: 'rawlist',
+        message: 'Please enter the role of the new employee',
+        choices: roles
+        },
+        {
+        name: 'manager',
+        type: 'rawlist',
+        message: 'Please enter the manager of the new employee',
+        choices: employees
+        }
+
+    ]).then((employeeInput) => {
+        dbconnect.query(`INSERT INTO employee SET ?`, { first_name: employeeInput.firstName, last_name: employeeInput.lastName, role_id: employeeInput.role, manager_id: employeeInput.manager},
+        (err, res) => {
+        if (err) throw err;
+        Qs()
+      })
+     })
+    })
+ })
+};
+
+const updateEmployee = () => {
+    dbconnect.query(`SELECT * FROM role;`, (err, res) => {
+        if (err) throw err;
+        let roles = res.map(role => ({name: role.title, value: role.role_id}));
+        dbconnect.query(`SELECT * FROM employee;`, (err, res) => {
+            if (err) throw err;
+            let employees = res.map(employee => ({name: employee.first_name + ' ' + employee.last_name, value: employee.id}));
+            inquirer.prompt([
+            {
+            name: 'employee',
+            type: 'rawlist',
+            message: 'Please choose the employee you want to update the role for',
+            choices: employees
+            },
+            {
+            name: 'empRole',
+            type: 'rawlist',
+            message: 'Please choose the new role for the employee',
+            choices: roles
+            },
+         ]).then((updateInput) => {
+            dbconnect.query(`UPDATE employee SET ? WHERE ?`, [{ role_id: updateInput.empRole},{ id: updateInput.employee }],
+            (err, res) => {
+            if (err) throw err;
+            Qs()
+            }
+         )}
+     )}
+  )}
+)};
 
 
 
