@@ -16,10 +16,10 @@ const Qs = async () => {
         viewDepartments().then(Qs)
         }
         if (userInput.initialQ === "View all roles") {
-        viewRoles()
+        viewRoles().then(Qs)
         }
         if (userInput.initialQ === "View all employees") {
-        viewEmployees()
+        viewEmployees().then(Qs)
         }
         if (userInput.initialQ === "Add a department") {
         addDepartment()
@@ -42,21 +42,20 @@ const Qs = async () => {
 const viewDepartments = async () => {
     let data = await dbconnect.promise().query("SELECT * FROM department");
     console.table(data[0]);
-  }
+    };
 
-const viewRoles = () => {
-    dbconnect.query("SELECT * FROM role", function (err, res) {
-    console.table(res);
-    });
-    Qs()
-  }
-
-const viewEmployees = () => {
-    dbconnect.query("SELECT * FROM employee", function (err, res) {
-    console.table(res);
-    });
-    Qs()
-  } 
+const viewRoles = async () => {
+    let data = await dbconnect.promise().query("SELECT * FROM role");
+    console.table(data[0]);
+    };
+    
+  
+const viewEmployees = async () => {
+    let data = await dbconnect.promise().query("SELECT * FROM employee");
+    console.table(data[0]);
+    };
+   
+  
 
 const addDepartment = () => {
     inquirer.prompt([
