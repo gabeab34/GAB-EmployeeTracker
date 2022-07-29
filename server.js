@@ -25,7 +25,7 @@ const Qs = async () => {
         addDepartment()
         }
         if (userInput.initialQ === "Add a role") {
-        addRole().then(Qs)
+        addRole()
         }
         if (userInput.initialQ === "Add an employee") {
         addEmployee()
@@ -45,13 +45,13 @@ const viewDepartments = async () => {
     };
 
 const viewRoles = async () => {
-    let data = await dbconnect.promise().query("SELECT * FROM role");
+    let data = await dbconnect.promise().query('SELECT role.id as ID, role.title as Title, role.salary as Salary, department.name as Department from role join department ON role.department_id = department.id;');
     console.table(data[0]);
     };
     
   
 const viewEmployees = async () => {
-    let data = await dbconnect.promise().query("SELECT * FROM employee");
+    let data = await dbconnect.promise().query(`SELECT a.first_name as "First Name", a.last_name as "Last Name", role.title as Title, role.salary as Salary, department.name as Department, CONCAT(b.first_name, ' ', b.last_name) as Manager from employee a left join employee b on a.manager_id = b.id left join role on a.role_id = role.id left join department ON role.department_id = department.id`);
     console.table(data[0]);
     };
    
@@ -93,6 +93,7 @@ const addRole = async () => {
         dbconnect.query(`INSERT INTO role SET ?`, roleInput,
         (err, res) => {
         if (err) throw err;
+        Qs()
         })
     })
  };
